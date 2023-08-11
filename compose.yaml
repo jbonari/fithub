@@ -1,0 +1,51 @@
+services:
+
+  db:
+    image: postgres:15.0
+    container_name: dbfithub
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=JB-IT2023!
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fithub
+      - DATABASE_HOST=127.0.0.1
+    ports:
+      - '5432:5432'
+    volumes:
+      #allow *.sql, *.sql.gz, or *.sh and is execute only if data directory is empty
+      - ./dbfiles:/docker-entrypoint-initdb.d
+      - /var/lib/postgres_fithub:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '81:80'
+    depends_on:
+      - db
+
+  web:
+    image: tomcat:9.0.54
+    container_name: webfithub
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./ROOT.war:/usr/local/tomcat/webapps/ROOT.war
+    environment:
+      - POSTGRES_PASSWORD=JB-IT2023!
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fithub
+    depends_on:
+      - db
+
+  webserver:
+    image: nginx:1.22
+    container_name: webserverfithub
+    restart: unless-stopped
+    volumes:
+      - ./front:/usr/share/nginx/html
+    ports:
+      - "80:80"
+      - "443:443"
