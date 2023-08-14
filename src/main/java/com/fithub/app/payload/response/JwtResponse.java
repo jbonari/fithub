@@ -1,10 +1,9 @@
 package com.fithub.app.payload.response;
 
-import com.fithub.app.models.Rol;
 import lombok.*;
 
 import java.util.List;
-import java.util.Set;
+
 
 @Data
 @Builder

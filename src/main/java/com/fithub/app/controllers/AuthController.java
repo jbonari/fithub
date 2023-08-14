@@ -30,53 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-
 	private final AuthService authService;
-
-	//@Autowired
-	//UsuarioRepository usuarioRepository;
-
-	//@Autowired
-	//JwtUtils jwtUtils;
-
-	//@Autowired
-	//MessageSource messageSource;
-
-	/*
-/*
-	@PermitAll
-	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult result,
-											  @PathVariable("locale") Locale locale) {
-
-		ResponseEntity<?> resultado;
-
-		if (result.hasErrors()) {
-			resultado = ResponseEntity.badRequest().body(
-					new MessageResponse((messageSource.getMessage("msg.failure.login", null, locale)).toString()));
-		} else {
-
-			if (!usuarioRepository.existsByEmail(loginRequest.getEmail())
-					&& !usuarioRepository.existsByContrasenya(loginRequest.getPassword())) {
-				resultado = ResponseEntity.badRequest().body(new MessageResponse(
-						(messageSource.getMessage("msg.failure.credentials", null, locale)).toString()));
-			} else {
-				Authentication authentication = authenticationManager.authenticate(
-						new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-				String jwt = jwtUtils.generateJwtToken(authentication);
-
-				UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-				List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-						.collect(Collectors.toList());
-
-				resultado = ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getId(), userDetails.getIdioma() ,roles));
-			}
-		}
-
-		return resultado;
-	}*/
 
 	@PostMapping(value="login")
 	public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest){

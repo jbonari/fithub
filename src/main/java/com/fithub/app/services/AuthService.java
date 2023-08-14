@@ -56,6 +56,7 @@ public class AuthService {
                 .idUsuario(usuario.getIdUsuario())
                 .idioma(usuario.getIdioma())
                 .roles(authorities)
+                .type("Bearer")
                 .build();
     }
 
@@ -115,6 +116,7 @@ public class AuthService {
                 .idUsuario(user.getIdUsuario())
                 .idioma(user.getIdioma())
                 .roles(authorities)
+                .type("Bearer")
                 .build();
 
     }
