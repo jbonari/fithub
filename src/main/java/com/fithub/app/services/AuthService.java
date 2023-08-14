@@ -8,6 +8,10 @@ import com.fithub.app.request.AltaUsuarioRequest;
 import com.fithub.app.request.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.fithub.app.models.Usuario;
@@ -16,30 +20,49 @@ import org.springframework.context.MessageSource;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
-    RolRepository roleRepository;
-
-
+    private final RolRepository roleRepository;
     private final UsuarioRepository usuarioRepository;
     private final JwtService jwtService;
     private final PasswordEncoder encoder;
-
-    @Autowired
-    MessageSource messageSource;
+    private final MessageSource messageSource;
+    private final AuthenticationManager authenticationManager;
 
     public JwtResponse login(LoginRequest loginRequest) {
-        return null;
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
+
+        Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        //genearamos el token
+        UserDetails userDetails = new Usuario(usuario.getEmail(), usuario.getContrasenya(), usuario.getIdioma());
+
+        String token=jwtService.getToken(userDetails);
+
+
+        List<String> authorities = usuario.getRoles().stream()
+                .map(rol -> rol.getNombre())
+                .collect(Collectors.toList());
+
+        //respuesta Jwt
+        return JwtResponse.builder()
+                .token(jwtService.getToken(userDetails))
+                .email(usuario.getUsername())
+                .idUsuario(usuario.getIdUsuario())
+                .idioma(usuario.getIdioma())
+                .roles(authorities)
+                .build();
     }
 
     public JwtResponse registro(AltaUsuarioRequest request, Locale locale) {
-        Usuario user= Usuario.builder()
+        Usuario user = Usuario.builder()
                 .email(request.getEmail())
-                .contrasenya(encoder.encode( request.getPassword()))
+                .contrasenya(encoder.encode(request.getPassword()))
                 .nombre(request.getNombre())
                 .apellidos(request.getApellidos())
                 .idioma(request.getIdioma())
@@ -78,13 +101,20 @@ public class AuthService {
         }
 
 
-        //user.setRoles(roles);
+        user.setRoles(roles);
         usuarioRepository.save(user);
+
+        List<String> authorities = user.getRoles().stream()
+                .map(Rol::getNombre)
+                .collect(Collectors.toList());
 
         return JwtResponse.builder()
                 //estructura de la respuesta
                 .token(jwtService.getToken(user))
+                .email(user.getEmail())
                 .idUsuario(user.getIdUsuario())
+                .idioma(user.getIdioma())
+                .roles(authorities)
                 .build();
 
     }

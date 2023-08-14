@@ -1,13 +1,10 @@
 package com.fithub.app.models;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import com.fithub.app.models.Rol;
 
 import jakarta.persistence.*;
 
@@ -69,13 +66,18 @@ public class Usuario implements UserDetails{
 	@JoinTable(name = "rolusuario", joinColumns = @JoinColumn(name = "idusuario"), inverseJoinColumns = @JoinColumn(name = "idrol"))
 	private Set<Rol> roles = new HashSet<>();
 
-
+	public Usuario(String contrasenya, String email, String idioma) {
+		this.contrasenya = contrasenya;
+		this.email = email;
+		this.idioma= idioma;
+	}
 
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles.stream()
 				.map(role -> new SimpleGrantedAuthority(role.getNombre()))
 				.collect(Collectors.toList());
 	}
+
 
 	@Override
 	public String getPassword() {
@@ -106,4 +108,6 @@ public class Usuario implements UserDetails{
 	public boolean isEnabled() {
 		return true;
 	}
+
+
 }

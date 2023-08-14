@@ -43,7 +43,7 @@ public class AuthController {
 	//MessageSource messageSource;
 
 	/*
-
+/*
 	@PermitAll
 	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult result,
