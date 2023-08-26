@@ -3,7 +3,6 @@ com/fithub/app/request/LoginRequest.class
 com/fithub/app/payload/response/JwtResponse$JwtResponseBuilder.class
 com/fithub/app/request/LoginRequest$LoginRequestBuilder.class
 com/fithub/app/exceptions/EmptyException.class
-com/fithub/app/security/jwt/JwtUtils.class
 com/fithub/app/services/JwtService.class
 com/fithub/app/repositoris/RolRepository.class
 com/fithub/app/controllers/UsuarioController.class
@@ -18,7 +17,6 @@ com/fithub/app/security/jwt/AuthTokenFilter.class
 com/fithub/app/models/Usuario$UsuarioBuilder.class
 com/fithub/app/controllers/DemoController.class
 com/fithub/app/utils/SpringUtils$1.class
-com/fithub/app/services/UserDetailsImpl.class
 com/fithub/app/payload/response/JwtResponse.class
 com/fithub/app/controllers/AuthController.class
 com/fithub/app/request/AltaUsuarioRequest$AltaUsuarioRequestBuilder.class

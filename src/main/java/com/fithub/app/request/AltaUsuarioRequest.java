@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -17,9 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 public class AltaUsuarioRequest {
 
-    @NotNull
+    @NotBlank
     @Email
-    @Size(max = 100)
+    @Size(min = 4,max = 100)
     private String email;
 
     @NotNull
@@ -40,6 +41,7 @@ public class AltaUsuarioRequest {
     @Size(max = 6)
     private String idioma;
 
+    @NotNull
     @Size(max = 45)
     private Set<String> roles;
     

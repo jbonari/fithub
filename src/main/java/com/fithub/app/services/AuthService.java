@@ -2,12 +2,13 @@ package com.fithub.app.services;
 
 import com.fithub.app.models.Rol;
 import com.fithub.app.payload.response.JwtResponse;
+import com.fithub.app.payload.response.MessageResponse;
 import com.fithub.app.repositoris.RolRepository;
 import com.fithub.app.repositoris.UsuarioRepository;
 import com.fithub.app.request.AltaUsuarioRequest;
 import com.fithub.app.request.LoginRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,7 +61,10 @@ public class AuthService {
                 .build();
     }
 
-    public JwtResponse registro(AltaUsuarioRequest request, Locale locale) {
+    public boolean registro(AltaUsuarioRequest request, Locale locale) {
+
+        boolean resultado=false;
+
         Usuario user = Usuario.builder()
                 .email(request.getEmail())
                 .contrasenya(encoder.encode(request.getPassword()))
@@ -88,6 +92,7 @@ public class AuthService {
                                     (messageSource.getMessage("msg.failure.role", null, locale)).toString()));
                     roles.add(entrenadorRole);
 
+
                     break;
                 case "ROLE_EMPRESA":
                     Rol empresaRole = roleRepository.findByNombre("ROLE_EMPRESA").orElseThrow(() -> new RuntimeException(
@@ -102,14 +107,31 @@ public class AuthService {
         }
 
 
-        user.setRoles(roles);
-        usuarioRepository.save(user);
+        //user.setRoles(roles);
+
+        try {
+            usuarioRepository.save(user);
+            // Si llegamos a este punto sin errores, cambiamos el valor de resultado a true
+            resultado = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+        // Respuesta de éxito
+        /*
 
         List<String> authorities = user.getRoles().stream()
                 .map(Rol::getNombre)
                 .collect(Collectors.toList());
 
-        return JwtResponse.builder()
+
+
+        JwtResponse jwtResponse = JwtResponse.builder()
                 //estructura de la respuesta
                 .token(jwtService.getToken(user))
                 .email(user.getEmail())
@@ -118,6 +140,10 @@ public class AuthService {
                 .roles(authorities)
                 .type("Bearer")
                 .build();
+
+        return ResponseEntity.ok(jwtResponse);*/
+
+        return resultado;
 
     }
 }

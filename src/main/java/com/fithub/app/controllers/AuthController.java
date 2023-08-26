@@ -7,6 +7,7 @@ import com.fithub.app.repositoris.UsuarioRepository;
 import com.fithub.app.request.AltaUsuarioRequest;
 import com.fithub.app.request.LoginRequest;
 import com.fithub.app.services.AuthService;
+import com.fithub.app.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,8 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
 	private final AuthService authService;
+	private final MessageSource messageSource;
+	private final UsuarioRepository usuarioRepository;
 
 	@PostMapping(value="login")
 	public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest){
@@ -39,9 +42,53 @@ public class AuthController {
 	}
 
 	@PostMapping(value = "register")
-	public ResponseEntity<JwtResponse> register(@RequestBody AltaUsuarioRequest request,Locale locale){
+	public ResponseEntity<?> register(@Valid @RequestBody AltaUsuarioRequest request,Locale locale, BindingResult result){
+
+		ResponseEntity<?> resultado;
+		boolean resreg = false;
+
+		if (result.hasErrors()) {
+			resultado = ResponseEntity.badRequest().body(
+					new MessageResponse((messageSource.getMessage("msg.failure.register", null, locale)).toString()));
+		} else {
+			if (usuarioRepository.existsByEmail(request.getEmail())) {
+				return ResponseEntity.badRequest().body(
+						new MessageResponse((messageSource.getMessage("msg.failure.email", null, locale)).toString()));
+			}
+
+			resreg = authService.registro(request, locale);
+
+			if (resreg) {
+				resultado = ResponseEntity.ok(new MessageResponse(
+						(messageSource.getMessage("msg.success.register", null, locale)).toString()));
+			} else {
+				return ResponseEntity.badRequest().body(new MessageResponse(
+						(messageSource.getMessage("msg.failure.register", null, locale)).toString()));
+			}
+		}
+
+		return resultado;
+	}
+
+	/*
+	@PostMapping(value = "register")
+	public ResponseEntity<?> register(@Valid @RequestBody AltaUsuarioRequest request,Locale locale,BindingResult result){
+
+		ResponseEntity<?> resultado;
+		boolean resreq=false;
+
+		if (result.hasErrors()){
+			resultado= ResponseEntity.badRequest().body(
+					new MessageResponse((messageSource.getMessage("msg.failure.register",null,locale)).toString()));
+		}else{
+			if (usuarioRepository.existsByEmail(request.getEmail())){
+				return ResponseEntity.badRequest().body(
+						new MessageResponse((messageSource.getMessage("msg.failure.email", null, locale)).toString()));
+			}
+		}
+
 
 		return ResponseEntity.ok(authService.registro(request,locale));
-	}
+	}*/
 
 }

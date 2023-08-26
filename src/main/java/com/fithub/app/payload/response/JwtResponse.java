@@ -9,15 +9,15 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
-
-public class JwtResponse {
+public class JwtResponse{
 	private String email;
 	private Long idUsuario;
 	private String idioma;
 	private List<String> roles;
 	private String token;
 	private String type = "Bearer";
+
+
 
 
 }

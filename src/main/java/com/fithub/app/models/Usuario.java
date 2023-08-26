@@ -41,11 +41,11 @@ public class Usuario implements UserDetails{
 	@Column(name = "contrasenya")
 	private String contrasenya;
 
-
+	@Size(max = 120)
 	@Column(name = "nombre")
 	private String nombre;
 
-
+	@Size(max = 120)
 	@Column(name = "apellidos")
 	private String apellidos;
 

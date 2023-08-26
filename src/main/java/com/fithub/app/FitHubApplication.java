@@ -8,11 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 @EnableCaching
 @SpringBootApplication
-@ComponentScan(basePackages = {
-        "com.fithub.app.repositoris",
-        "com.fithub.app.services",
-        "com.fithub.app.controllers" // Agrega otros paquetes si es necesario
-})
 public class FitHubApplication {
 
     public static void main(String[] args) {
