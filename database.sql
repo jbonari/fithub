@@ -45,17 +45,17 @@ CREATE SEQUENCE fithub.usuario_idusuario_seq
 --TABLA USUARIO
 CREATE TABLE fithub.usuario(
     idusuario bigint NOT NULL PRIMARY KEY DEFAULT nextval('fithub.usuario_idusuario_seq'::regclass),
-    contrasenya CHARACTER VARYING(120),
-    nombre CHARACTER VARYING(255),
-    apellidos CHARACTER VARYING(255),
-    email CHARACTER VARYING (255) UNIQUE ,
-    idioma CHARACTER VARYING(6),
-    fecha_registro DATE,
-    delete boolean
+    contrasenya CHARACTER VARYING(120) NOT NULL,
+    nombre CHARACTER VARYING(255) NOT NULL,
+    apellidos CHARACTER VARYING(255) NOT NULL,
+    email CHARACTER VARYING (255) UNIQUE NOT NULL ,
+    idioma CHARACTER VARYING(6) NOT NULL ,
+    fecha_registro DATE NOT NULL ,
+    delete boolean NOT NULL
 );
 
 ALTER TABLE fithub.usuario OWNER TO postgres;
-DROP TABLE fithub.usuario;
+DROP TABLE fithub.usuario cascade;
 select * from fithub.usuario;
 -- TABLA ROLUSUARIO
 CREATE TABLE fithub.rolusuario(
@@ -104,16 +104,16 @@ CREATE SEQUENCE fithub.entrenador_identrenador_seq
 CREATE TABLE fithub.entrenador(
     identrenador BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('fithub.entrenador_identrenador_seq'::regclass),
     descripcion CHARACTER VARYING(500),
-    experiencia CHARACTER VARYING(500),
     especialidad CHARACTER VARYING(200),
     foto_perfil CHARACTER VARYING(255),
-    horarios CHARACTER VARYING(255),
     delete boolean,
+    servicios character varying(500),
     empresa_idempresa BIGINT,
     usuario_idusuario BIGINT NOT NULL,
     CONSTRAINT usuario_idusuario FOREIGN KEY (usuario_idusuario)  REFERENCES fithub.usuario (idusuario),
     CONSTRAINT empresa_idempresa FOREIGN KEY (empresa_idempresa)  REFERENCES fithub.empresa (idempresa)
 );
+
 ALTER TABLE fithub.entrenador OWNER TO postgres;
 drop table fithub.entrenador;
 --SECUENCIA TABLA CODIGOPROMOCIONAL
